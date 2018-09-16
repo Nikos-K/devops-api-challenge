@@ -1,0 +1,135 @@
+version: 2
+jobs:
+  Pipeline_Dev:
+    working_directory: ~/hello-api-challenge
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm i --save-dev serverless-plugin-canary-deployments
+            npm i --save-dev serverless-plugin-aws-alerts
+            npm install
+      - run:
+          name: Linting 
+          command: | 
+            sudo npm install standard --global
+            standard "index.js"
+      - run:
+          name: Unit Testing 
+          command: echo "Unit tests TBA."
+      - run:
+          name: Deploy API 
+          command: sls deploy -v -s dev
+
+  Pipeline_Prod:
+    working_directory: ~/hello-api-challenge
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm i --save-dev serverless-plugin-canary-deployments
+            npm i --save-dev serverless-plugin-aws-alerts
+            npm install 
+      - run:
+          name: Linting 
+          command: | 
+            sudo npm install standard --global
+            standard "index.js"
+      - run:
+          name: Unit Testing 
+          command: echo "Unit tests TBA." 
+      - run:
+          name: Deploy API 
+          command: sls deploy -v -s prod
+  
+  Remove_Dev_Env:
+    working_directory: ~/hello-api-challenge
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm i --save-dev serverless-plugin-canary-deployments
+            npm i --save-dev serverless-plugin-aws-alerts
+            npm install  
+      - run:
+          name: DELETE API 
+          command: sls remove -v -s dev
+  
+  Remove_Prod_Env:
+    working_directory: ~/hello-api-challenge
+    docker:
+      - image: circleci/node:8.10
+    steps:
+      - checkout
+      - run:
+          name: Install Serverless CLI and dependencies
+          command: |
+            sudo npm i -g serverless
+            npm i --save-dev serverless-plugin-canary-deployments
+            npm i --save-dev serverless-plugin-aws-alerts
+            npm install  
+      - run:
+          name: DELETE API 
+          command: sls remove -v -s prod
+
+workflows:
+  version: 2
+  Deployment_Pipeline_Dev:
+    jobs:
+      - Pipeline_Dev:
+          filters:
+            branches:
+              only:
+                - develop
+
+  Deployment_Pipeline_Prod:
+    jobs:
+      - Pipeline_Prod:
+          filters:
+            branches:
+              only:
+                - master
+
+  Deletion_Pipeline_Dev:
+    jobs:
+      - Deletion_Approval_Dev_Hold:
+          type: approval
+          filters:
+            branches:
+              only:
+                - remove-dev
+      - Remove_Dev_Env:
+          requires:
+            - Deletion_Approval_Dev_Hold
+          filters:
+            branches:
+              only:
+                - remove-dev
+  
+  Deletion_Pipeline_Prod:
+    jobs:
+      - Deletion_Approval_Prod_Hold:
+          type: approval
+          filters:
+            branches:
+              only:
+                - remove-prod
+      - Remove_Prod_Env:
+          requires:
+            - Deletion_Approval_Prod_Hold
+          filters:
+            branches:
+              only:
+                - remove-prod
