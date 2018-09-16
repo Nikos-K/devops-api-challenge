@@ -1,0 +1,111 @@
+service: helloworld-api
+
+package:
+  exclude:
+  - coverage/**
+  - .circleci/**
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1
+  environment:
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    SLS_STAGE: ${opt:stage, self:provider.stage}
+    DEPLOYMENT_TYPE: ${self:custom.envDeploymentSettings.DEPLOYMENT_TYPE.${self:provider.environment.SLS_STAGE}}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - codedeploy:*
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
+
+plugins:
+  - serverless-plugin-canary-deployments
+  - serverless-plugin-aws-alerts
+#  - serverless-domain-manager
+
+custom:
+  envDeploymentSettings:
+    DEPLOYMENT_TYPE:
+      prod: Canary10Percent5Minutes
+      dev: AllAtOnce
+  alerts:
+    dashboards: true
+  deploymentSettings:
+    stages:
+      - dev
+      - prod
+#  customDomain:
+#    domainName: 'api.mycompany.com'
+#    basePath: 'products' # This will be prefixed to all routes
+#    stage: ${self:provider.stage}
+#    createRoute53Record: true
+
+functions:
+  hello:
+    name: hello-lambda-${self:provider.environment.SLS_STAGE}
+    handler: index.handler
+    memorySize: 128
+    events:
+      - http: 
+          path: hello/{name}
+          integration: lambda
+          request:
+            template:
+              application/json: '{ "name" : "$input.params(''name'')", "dateOfBirth": $input.json(''dateOfBirth''), "httpmethod": "PUT" }'
+          method: put
+          response: 
+            statusCodes:
+              204:
+                pattern: ''
+      - http: 
+          path: hello/{name}
+          integration: lambda
+          request:
+            template:
+              application/json: '{ "name" : "$input.params(''name'')", "httpmethod": "GET" }'
+          method: get
+    alarms:
+      - name: foo
+        namespace: 'AWS/Lambda'
+        metric: Errors
+        threshold: 1
+        statistic: Minimum
+        period: 60
+        evaluationPeriods: 1
+        comparisonOperator: GreaterThanOrEqualToThreshold
+    deploymentSettings:
+      type: ${self:provider.environment.DEPLOYMENT_TYPE}
+      alias: ${self:provider.environment.SLS_STAGE}
+      preTrafficHook: preHook
+      postTrafficHook: postHook
+      alarms:
+        - HelloFooAlarm
+  preHook:
+    handler: hooks.pre
+  postHook:
+    handler: hooks.post
+
+resources:
+  Resources:
+    UsersDynamoDbTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
