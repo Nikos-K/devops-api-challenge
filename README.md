@@ -1,6 +1,6 @@
 # DevOps Engineer Challenge - HTTP Based API
 
-[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge.svg?style=svg&circle-token=193ff4cf4dbb53e16ccac807cb00c658022f0c18)](https://circleci.com/gh/Nikos-K/devops-api-challenge)
+[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge.svg?style=svg)](https://circleci.com/gh/Nikos-K/devops-api-challenge)
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 
 
