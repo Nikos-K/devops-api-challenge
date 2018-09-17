@@ -10,7 +10,7 @@
 ## Solution Overview & Toolstack
 ![HomePage](https://github.com/Nikos-K/devops-api-challenge/blob/master/img/architecture.jpg)
 
-This project makes use of the following toolstack in order to built, test and deploy a highly available& scalable "Hello World" application. Built-in features include: zero-downtime automated deployments, canary type deployments for the prod environment, automated roll-backs, integrated testing (linting, unit, integration), aggregated logging and monitoring.
+This project makes use of the following toolstack in order to built, test and deploy a highly available & scalable "Hello World" application. Built-in features include: zero-downtime automated deployments, canary type deployments for the prod environment, automated roll-backs, integrated testing (linting, unit, integration), aggregated logging and monitoring.
 
 **Toolstack**
 * [Serverless](https://serverless.com/framework/docs/): is a CLI tool that allows users to build & deploy event-driven serverless microservices on different cloud providers. It was chosen for this project as it allowed to quickly build and deploy an API application that is highly available & scalable in AWS, as well as to benefit from plugins providing features such as Canary deployments. The serverless deployment code is stored in the [serverless.yml](serverless.yml) file.
@@ -29,12 +29,12 @@ Note: As part of this PoC, a [GitHub Flow](https://guides.github.com/introductio
     - master => No direct pushes are allowed to this branch. This branch is used to trigger deployments in the prod environment. 
     - develop => This branch is used to trigger deployments in the dev environment.
     - remove-prod => This branch is used to trigger the deletion of the prod environment.
-    - remove-dev => This branch is used to trigger the deletion of the prod environment.
+    - remove-dev => This branch is used to trigger the deletion of the dev environment.
 
 
 **Deployment Workflow for Dev Environment**
 1. The Dev pipeline in CircleCI is triggered when a developer pushes code into the develop branch of the repo.
-2. The first step of the Dev pipeline is to trigger setup the environment and checkout the code from the develop branch.
+2. The first step of the Dev pipeline is to trigger the setup of the environment in CircleCi and checkout the code from the develop branch.
 3. The next step is to install the Serverless CLI as well as any other dependencies and plugins using npm.
 4. In this step the pipeline executes linting on the index.js script using StandardJS.
 5. Here we perform unit testing on the index.js script.
@@ -43,7 +43,7 @@ Note: As part of this PoC, a [GitHub Flow](https://guides.github.com/introductio
 * It creates a CodeDeploy Application and adds a CodeDeploy DeploymentGroup per Lambda function, according to the specified settings. For the Dev environment the traffic will be shifted between the Lambda function versions using the AllAtOnce type, and in the Prod environment using the Canary10Percent5Minutes type.
 * It modifies the events that trigger the Lambda functions, so that they invoke the newly created alias.
 * Provides CodeDeploy with a list of alarms to track during the deployment process. In case any of them turn into ALARM state, then it cancels the deployment and shifts all the traffic to the old version.
-* Uses Pre and Post Hooks as Lambda functions. These are triggered by CodeDeploy before and after traffic shifting takes place. It expects to get notified about the success or failure of the hook, only continuing to the next step if it succeeded. These hooks are usefull for running end-to-end or integration tests and checking that all the pieces fit together in the cloud, since it'll automatically roll back upon failure.
+* Uses Pre and Post Hooks as Lambda functions. These are triggered by CodeDeploy before and after traffic shifting takes place. It expects to get notified about the success or failure of the hook, only continuing to the next step if it succeeded. These hooks are usefull for running end-to-end or integration tests and checking that all the pieces fit together in the cloud, since it will automatically roll back upon failure.
 
 **Deployment Workflow for Prod Environment**
 
@@ -83,7 +83,7 @@ Due to the scope & time constraints for this PoC, the following points could be 
 
 * Unit Testing: Although a step has been added as part of the CircleCI pipeline to accommodate unit tests, the scripts have not been completed as part of this PoC. A testing framework such as Mocha could be used for testing the nodejs function. 
 * Integration Testing: The pre and post hooks that have been added as part of the current serverless configuration, could be developed further in order to run end-to-end or integration tests.
-* Reduced CI/CD times: The deployment times as part of the pipeline could be reduced by making use of the CircleCi feature of [Caching Dependencies](https://circleci.com/docs/2.0/caching/) from the previous builds and/or parallel builds. Moreover, using the [sls package](https://serverless.com/framework/docs/providers/aws/cli-reference/package/) command before using the sls deploy command could further improve the deployment time, transparency and traceability. Other performance improvement could be realised by using different settings for the AWS DynamoDB, API Gateway and Lambda services.
+* Reduced CI/CD times: The deployment times as part of the pipeline could be reduced by making use of the CircleCi feature of [Caching Dependencies](https://circleci.com/docs/2.0/caching/) from the previous builds and/or parallel builds. Moreover, using the [sls package](https://serverless.com/framework/docs/providers/aws/cli-reference/package/) command before using the sls deploy command could further improve the deployment time, transparency and traceability. Further performance improvements could be realised by using different settings for the AWS DynamoDB, API Gateway and Lambda services.
 * Monitoring & Alerting: Additional alerts could be configured in CloudWatch based on different Lambda function metrics (ex. Invocations, Throttles, Duration, etc.. ). Moreover, these alerts as well as others from CircleCI could be sent into users through SNS or Slack notifications.
-* Security: Many features could be implemented to improve the security posture of this solution. For example, an API key could be configured and required as part of the API Gateway. Also, AWS Cognito could be integrated as part of this solution for user management. Another security consideration could be the handling of the CircleCI user (rotating keys, limit service access, etc..) as well as the use of complete different AWS accounts, regions for different environments.
+* Security: Many features could be implemented to improve the security posture of this solution. For example, an API key could be configured and required as part of the API Gateway. Also, AWS Cognito could be integrated as part of this solution for user management. Another security consideration could be the handling of the CircleCI user (rotating keys, limit service access, etc..) as well as the use of different AWS accounts and regions for different environments.
 * Stable API Domain: The [serverless-domain-manager plugin](https://github.com/amplify-education/serverless-domain-manager) could be used in order to use custom domain when deploying the application with serverless.
