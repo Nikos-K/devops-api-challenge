@@ -1,7 +1,10 @@
 # DevOps Engineer Challenge - HTTP Based API
 
-[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge.svg?style=svg)](https://circleci.com/gh/Nikos-K/devops-api-challenge)
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
+[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/master.svg?style=svg&circle-token=ce7276abbdb86f46f3b434d75e0f1afce1e02154)](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/master)
+[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/develop.svg?style=svg&circle-token=ce7276abbdb86f46f3b434d75e0f1afce1e02154)](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/develop)
+[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/remove-prod.svg?style=svg&circle-token=ce7276abbdb86f46f3b434d75e0f1afce1e02154)](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/remove-prod)
+[![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/remove-dev.svg?style=svg&circle-token=ce7276abbdb86f46f3b434d75e0f1afce1e02154)](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/remove-dev)
 
 
 ## Solution Overview & Toolstack
