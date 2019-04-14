@@ -1,4 +1,4 @@
-# DevOps Engineer Challenge - HTTP Based API
+# Serverless HTTP Based API
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![CircleCI](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/master.svg?style=svg&circle-token=ce7276abbdb86f46f3b434d75e0f1afce1e02154)](https://circleci.com/gh/Nikos-K/devops-api-challenge/tree/master)
@@ -10,7 +10,7 @@
 ## Solution Overview & Toolstack
 ![HomePage](https://github.com/Nikos-K/devops-api-challenge/blob/master/img/architecture.jpg)
 
-This project makes use of the following toolstack in order to built, test and deploy a highly available & scalable "Hello World" application. Built-in features include: zero-downtime automated deployments, canary type deployments for the prod environment, automated roll-backs, integrated testing (linting, unit, integration), aggregated logging and monitoring.
+This project makes use of the following tools in order to built, test and deploy a highly available & scalable Nodejs based API. Built-in features include: zero-downtime automated deployments, canary type deployments for the prod environment, automated roll-backs, integrated testing (linting, unit, integration), aggregated logging and monitoring.
 
 **Toolstack**
 * [Serverless](https://serverless.com/framework/docs/): is a CLI tool that allows users to build & deploy event-driven serverless microservices on different cloud providers. It was chosen for this project as it allowed to quickly build and deploy an API application that is highly available & scalable in AWS, as well as to benefit from plugins providing features such as Canary deployments. The serverless deployment code is stored in the [serverless.yml](serverless.yml) file.
